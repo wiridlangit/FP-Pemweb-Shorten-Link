@@ -25,13 +25,14 @@
 <script>
 // import { onBeforeMount } from "vue";
 // import { useUserStore } from '@/stores/user'
-import { useApp, useView } from "../stores/index.js";
+//import { useApp, useView } from "../stores/index.js";
+import { useApp } from "../stores/index.js";
 
 export default {
   name: "App",
   setup() {
     const app = useApp();
-    const view = useView();
+    // const view = useView();
     // const userStore = useUserStore()
 
     // onBeforeMount(() => {
@@ -40,7 +41,7 @@ export default {
 
     return {
       app,
-      view,
+      // view,
       // userStore,
     };
   },
