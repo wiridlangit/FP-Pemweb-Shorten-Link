@@ -1,53 +1,36 @@
 <template>
-  <div>
-      <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Shorten Link</h1>
-      <form @submit.prevent="addTask">
-          <div class="form-group">
-              <label class="border w-4/12" for="newTodoDescription"></label>
-              <input type="text" class="form-control" ref="desc" v-model="this.description" placeholder="Write Here" required>
-             
-          </div>
-          <br>
-          <button type="submit" class="buttonCreate">Create</button>
-      </form>
-      <br>
-</div>
-<div class="todoList">
- 
-      <br>
-      
-      <br>
-      <table class="table">
-          <thead class="table table-dark">
-              <tr>
-                  <th class="description">Your Link</th>
-                  <!-- <th class="tags">Kategori</th>
-                  <th class="edit">Edit</th>
-                  <th class="delete">Delete</th> -->
-              </tr>
-          </thead>
-          <tbody>
-              <tr v-for="(task,i) in tasks" :key="i">
-                   <td class="description" v-bind:class="{completed: task.completed}" @click="toggleTask(task.id, task.completed)">
-                  {{task.description}}<div><input type="checkbox" :checked="task.completed" @click="check" /></div></td>
-                  <td> 
-                  </td>
-            <td><button class="buttonRemove" @click="deleteTask(task.id)"><i class="fa fa-trash"></i></button>
-                  </td>
-              </tr>
-          </tbody>
-      </table>    
-  </div>
+  <router-link class="flex-w-max mt-4 px-4 py-2 text-center rounded-full bg-blue-500 text-white" to="/list">List</router-link>
+  <form @submit.prevent="app.newLink()" class="rounded-lg bg-white-500 w-full itens-center lg:w-3/12 m-auto xl:p-10 lg:p-8 relative flex justify-center lg:flex-col my-40">
+    <h3 class="flex justify-center text-3xl font-bold tracking-tight text-gray-900">Shorten Link</h3>
+
+    <label for="email">Full Link:</label>
+    <input class="border w-full" type="email" name="email" v-model="email" required>
+
+    <button class="flex-w-max mt-4 px-4 py-2 text-center rounded-full bg-blue-500 text-white">Submit</button>
+    <div v-if="error">{{ error }}</div>
+  </form>
 </template>
 
+
 <script>
-import { Icon } from "@iconify/vue";
-import NavbarVue from "../components/Navbar.vue";
-export default {
-  name: "HomeView",
-  components: {
-    NavbarVue,
-    Icon,
-  },
-};
+// import { useApp } from "../stores/index.js";
+// export default {
+//   name: "LoginView",
+//   data() {
+//     return {
+//     };
+//   },
+//   beforeMount() {
+//     if(this.app.user.logged_in) {
+//       this.$router.push("/");
+//     }
+//   },
+//   setup() {
+//     const app = useApp();
+//     return {
+//       app,
+//     };
+//   },
+// };
 </script>
+

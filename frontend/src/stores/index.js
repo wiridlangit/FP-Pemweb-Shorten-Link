@@ -2,6 +2,11 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { auth } from '../firebase/config'
+import { 
+  signOut 
+} from 'firebase/auth'
+
 
 const URL_API = "http://localhost:3000/";
 
@@ -10,6 +15,8 @@ export const useApp = defineStore({
   state: () => ({
     user: {
       logged_in: false,
+      // email: "",
+      // password: "",
     },
     token: null,
     refreshToken: null,
@@ -21,36 +28,19 @@ export const useApp = defineStore({
       this.loading = true;
       this.error = null;
       try {
-        const { data } = await axios
-          .post(URL_API, {
-            email,
-            password,
+        console.log("jajan")
+        const res = await axios.post('http://localhost:3000/post/login', {
+            email: email,
+            password: password,
           })
-          .then((res) => {
-            console.log(res);
-            document.cookie = `token=${
-              res.data.token
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
-            document.cookie = `refreshToken=${
-              res.data.refreshToken
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        this.user = data.user;
-        this.token = data.token;
-        this.refreshToken = data.refreshToken;
-      } catch (error) {
-        this.error = error;
-      } finally {
-        this.router.push("/home");
-        this.loading = false;
-      }
+          console.log(res.data)
+          localStorage.setItem("userToken", res.data.uid);
+          this.router.push("/home")
+        }
+        catch(err){
+          console.log(err)
+        }
+      
     },
     async register(email, password ) {
       this.loading = true;
@@ -81,9 +71,16 @@ export const useApp = defineStore({
             if (
               error.response.data.message.code === "auth/email-already-in-use"
             ) {
-              Swal.fire("Email already in use");
-            }
-          });
+              // Swal.fire("Email already in use");
+              Swal.fire({
+                title: 'Error!',
+                text: 'Email already in use',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+              })
+              console.log('email telah terdaftar')
+            // }
+          }});
         this.user = data.user;
         this.token = data.token;
         this.refreshToken = data.refreshToken;
@@ -94,11 +91,34 @@ export const useApp = defineStore({
       }
       
     },
-    async logout() {
-      this.user = null;
-      this.token = null;
-      this.refreshToken = null;
+    // async logout() {
+    //   this.user = null;
+    //   this.token = null;
+    //   this.refreshToken = null;
+    // },
+
+    async logout () {
+      await signOut(auth)
+
+      this.CLEAR_USER
+
+      this.router.push('/')
     },
+
+    fetchUser () {
+      auth.onAuthStateChanged(async user => {
+        if (user === null) {
+          this.CLEAR_USER
+        } else {
+          this.SET_USER(user)
+
+          if (router.isReady() && router.currentRoute.value.path === '/') {
+            this.router.push('/')
+          }
+        }
+      })
+    },
+
     async sessionCheck() {
       // Todo: Check if token is valid
       const token = document.cookie
