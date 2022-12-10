@@ -35,6 +35,9 @@ export default {
       app,
     };
   },
+  mounted() {
+    this.app.sessionCheckLogin();
+  }
 };
 </script>
 

@@ -25,14 +25,12 @@ app.post('/post/login', (req, res) => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            return res.send({
-                message: "User signed in successfully",
-                token: user.accessToken,
-                expirationTime: user.expirationTime,
-                refreshToken: user.refreshToken
-            });
+            console.log("ini Login")
+            // localStorage.setItem('uid', user.uid)
+            res.send(user.uid);
         })
         .catch((error) => {
+            console.log(error)
             return res.status(400).send(error);
         });
     } catch (error) {
@@ -154,7 +152,8 @@ app.get("/shorts", async (req, res) => {
       try{
         const docRef = addDoc(collection(db,"shorten_test"),{
             full: real,
-             short: random
+             short: random,
+             uid: req.body.uid
         });
         //   short_collection.add({
         //     full : real,

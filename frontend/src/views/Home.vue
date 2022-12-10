@@ -29,7 +29,7 @@
               py-2
               mb-4
             ">
-          <h1 class="text-3xl text-center font-bold">Pemendek</h1>
+          <h1 class="text-3xl text-center font-bold">Pendekin</h1>
           <br />
           <form id="new-todo-form" @submit.prevent="addTodo">
             <input class="
@@ -65,6 +65,11 @@
                     Delete
                   </button>
                 </div>
+                <br>
+                <div class="flex justify-center bg-blue-400 rounded-lg" >
+                <button class="delete" @click="editLink(todo.id)">
+                  Update
+                </button></div>
               </div>
             </div>
           </section>
@@ -119,7 +124,8 @@
         try {
           await axios.post("http://localhost:3000/shorts/", {
             random_link: r,
-            real_link: this.real_link
+            real_link: this.real_link,
+            uid: localStorage.getItem('userToken')
           })
           this.load();
         } catch (e) {
@@ -146,6 +152,7 @@
         // await deleteDoc(doc(db, "shorten_test", todo.id));
         // this.load();
       },
+      
   
       selected(slot) {
         this.categor = slot;
@@ -168,8 +175,33 @@
         }
       },
     },
+     editLink() {
+      Swal.fire({
+        title: "Edit Link",
+        input: "text",
+        inputValue: "https://example.com",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        inputValidator: (value) => {
+          if (!value) {
+            return "You need to write something!";
+          }
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            "Changed Successfully",
+            "Your file has been changed.",
+            "success"
+          );
+        }
+      });
+    },
     mounted() {
-      this.load();
+        this.app.sessionCheck();
+        
+    //   this.load();
     },
   };
   </script>
