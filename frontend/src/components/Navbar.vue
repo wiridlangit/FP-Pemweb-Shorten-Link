@@ -45,6 +45,10 @@ export default {
       // userStore,
     };
   },
+  BeforeMount() {
+      this.app.sessionCheck();
+    },
+  };
   // methods: {
   //   async logout () {
   //       await store.dispatch('logout')
@@ -58,5 +62,5 @@ export default {
   //     this.$router.push({ name: 'Login' })
   //   }
   // }
-  }
+  //}
 </script>

@@ -144,10 +144,10 @@ export const useApp = defineStore({
 // export const useView = defineStore({
 //   id: "View",
 //   state: () => ({
-    // user_settings: false,
-    // use_custom_link: false,
-  // }),
-  // actions: {
+//     user_settings: false,
+//     use_custom_link: false,
+//   }),
+//   actions: {
 //     useCustomLink() {
 //       this.use_custom_link = !this.use_custom_link;
 //     },
@@ -293,49 +293,4 @@ export const useApp = defineStore({
 //     },
 //   },
 //   getters: {},
-// });
-
-// async addTodo() {
-//   // String Randomize
-//   let r = (Math.random() + 1).toString(36).substring(7);
-//   try {
-//     await axios.post("http://localhost:3000/shorts/", {
-//       random_link: r,
-//       real_link: this.real_link
-//     })
-
-//    this.load();
-//   } catch (e) {
-//     console.log("Gagal menambahkan", e);
-//   }
-// },
-
-// async removeTodo(todo) {
-//   const id = todo.id
-//   await axios.delete("http://localhost:3000/shorts/" + id)
-//   this.load();
-// },
-
-// // selected(slot) {
-// //   this.categor = slot;
-// // },
-
-// async updatedone(todo) {
-//   await updateDoc(doc(db, "shorten_test", todo.id), {
-//     done: !todo.done,
-//   });
-// },
-
-// async load() {
-//   try {
-//     axios.get("http://localhost:3000/shorts").then((res) => {
-//       console.log(res.data);
-//       this.lists = res.data;
-//       console.log(this.lists);
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   };
-// },
-// },
 // });
