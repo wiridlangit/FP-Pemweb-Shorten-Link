@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from '../views/Home.vue';
 import Signup from '../views/Signup.vue';
 import Login from '../views/Login.vue';
+import Edit from '../views/Edit.vue';
 import List from "../components/List.vue";
 
 const router = createRouter({
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/list',
       name: 'List',
       component: List
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      component: Edit
     },
     {
       path: '/:full',
