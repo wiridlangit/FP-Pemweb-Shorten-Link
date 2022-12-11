@@ -3,6 +3,7 @@
     <Navbar />
     <RouterView />
   </div>
+
   <div class="bottomm-full"><Footer/></div>
 </template>
 <script>

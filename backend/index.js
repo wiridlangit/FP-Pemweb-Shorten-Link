@@ -72,7 +72,7 @@ app.get("/shorts", async (req, res) => {
     
     try {
     let shorts = [];
-    const querySnapshot = await getDocs(collection(db, "shorten_test")).catch(err => (console.log(err)));
+    const querySnapshot = await getDocs(collection(db, "shorten_list")).catch(err => (console.log(err)));
     //   short_collection
     //   .get()
     //   .then((querySnapshot) => {
@@ -94,73 +94,102 @@ app.get("/shorts", async (req, res) => {
   });
   
   //Nampilin ShortLink
-  app.get("/shorts/:short", (req, res) => {
-    const short_params = req.params.short;
-  //   const {short} = req.params;
-    let shorts = [];
-    try {
-      short_collection
-        // .where("short", "==", short_params)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const id = doc.id;
-            console.log(data);
-            console.log(id);
-            shorts.push({
-              id: this.id,
-              short: data.short,
-              full: data.full,
-            });
-          });
+//   app.get("/shorts/:short", (req, res) => {
+//     const short_params = req.params.short;
+//   //   const {short} = req.params;
+//     let shorts = [];
+//     try {
+//       short_collection
+//         .get()
+//         .then((querySnapshot) => {
+//           querySnapshot.forEach((doc) => {
+//             const data = doc.data();
+//             const id = doc.id;
+//             console.log(data);
+//             console.log(id);
+//             shorts.push({
+//               id: this.id,
+//               short: data.short,
+//               full: data.full,
+//             });
+//           });
   
-          res.send(shorts);
-          // res.send("halo")
-        });
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(500);
-    }
-  });
+//           res.send(shorts);
+//           // res.send("halo")
+//         });
+//     } catch (error) {
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//   });
   
   app.delete("/shorts/:short", (req, res) => {
       const id_params = req.params.short;
       console.log(id_params)
       try{
         const docRef = 
-        deleteDoc(doc(db, "shorten_test" , id_params)).then(() => { res.send({
+        deleteDoc(doc(db, "shorten_list" , id_params)).then(() => { res.send({
                   message: "Data telah dihapus."
               })} )
-        //   })
-    //    const shortURL = db.collection('shorten_test');
-    //    shortURL.delete();
-    //    res.send({
-    //     message: "data removed",
-    //     status: true,
-    //    })
+  
       }
       catch (error){
           console.log(error)
       }
-  })
+  });
+
+//   // Function to redirect links
+// app.get("/shorts/:short", (req, res) => {
+//     const id_params = req.params.short;
+//     console.log(id_params)
+//     try {
+//     //   const shortRef = doc(collection(db, "shorten_list", id_params));
+//     //   const doc = shortRef.get();
+//       if (doc(collection(db, "shorten_list", id_params)).get.exists) {
+//         const short = doc.data();
+//         doc(collection).update({
+//           viewCount: full.viewCount + 1,
+//         });
+//         res.redirect(short.full);
+//       } else {
+//         res.send({
+//           message: "Short url does not exist",
+//           status: false,
+//         });
+//       } 
+//     } catch (err) {
+//       console.log(err);
+//     }
+//     });
+
+  app.post("/api/update", async (req, res) => {
+
+    const newRealLink = req.body.newRealLink
+    const id_params = req.params.short;
+    const docRef = doc(db, "shorten_list", id_params)
+
+    try {
+        await updateDoc(docRef, {
+            real_link: newRealLink
+        })
+        res.send({ message: "Succesfully edited" })
+    }
+    catch (err) {
+        console.log(err)
+        res.send(err)
+    }
+});
   
   app.post("/shorts/", (req, res) => {
     const real = req.body.real_link
     const random = req.body.random_link
     console.log(real, random)
       try{
-        const docRef = addDoc(collection(db,"shorten_test"),{
+        const docRef = addDoc(collection(db,"shorten_list"),{
             full: real,
              short: random,
              uid: req.body.uid
         });
-        //   short_collection.add({
-        //     full : real,
-        //     short : random,
-              // short:req.body.short,
-              // full:req.body.full
-        //   })
           res.send({
               message: "Data telah ditambahkan."
           })

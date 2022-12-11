@@ -1,9 +1,11 @@
 <template>
-
+<nav>
+    <router-link class="py-3 px-4 text-center text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow block lg:inline" to="/list">List</router-link>
+    <!-- <router-link class="py-3 px-4 text-center text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow block lg:inline" to="/home">Home</router-link> -->
+  </nav>
     <div>
-      <div class="
-            rounded-lg
-            bg-gray-900
+      <div class="rounded-lg
+            bg-blue-900
             w-full
             items-center
             lg:w-5/12
@@ -56,9 +58,15 @@
               <br />
               <div v-for="todo in lists" :class="`todo-item ${todo.done && 'done'}`" :key="todo">
                 <br />
-                <div class="todo-content">
+                <!-- <a class="underline" :href="`http://localhost:3000/shorts/` + todo.short">
                   http://localhost:5731/{{ todo.short }}
-                </div>
+                </a> -->
+                
+                <div class="flex items-center flex justify-center">
+                <router-link :to="'/' + todo.short" target="_blank">
+                {{ currentHost }}/{{ todo.short }}</router-link></div>
+
+                <!-- <a class="card-text" :href="`http://localhost:3000/shorts/${short}` + todo.short"> -->
   
                 <div class="flex justify-center bg-red-400 rounded-lg" type="delete" value="SUBMIT">
                   <button class="delete" @click="removeTodo(todo.id)">
@@ -66,10 +74,30 @@
                   </button>
                 </div>
                 <br>
-                <div class="flex justify-center bg-blue-400 rounded-lg" >
-                <button class="delete" @click="editLink(todo.id)">
+                <div class="flex justify-center bg-blue-400 rounded-lg">
+                <!-- <button class="update" @click="updateItem(id, customPath, real_link)"> -->
+                    <button class="update" @click= "todo.update = !todo.update">
                   Update
-                </button></div>
+                </button>
+            </div>
+            <br>
+            <form v-if="todo.update" id="update-form" @submit.prevent="updateItem()">
+            <input class="
+                  w-full
+                  focus:border-green-800 focus:ring-1 focus:ring-green-800 focus
+                  outline-none
+                  text-black
+                  placehorder
+                  rounded-lg
+                  pl-4
+                  py-2
+                  mb-4
+                " type="text" required name="content" id="content" placeholder="https/" v-model="edit_link" />
+  
+            <button class="w-full bg-yellow-700 rounded-lg" type="submit" value="SUBMIT">
+              Submit!
+            </button>
+          </form>
               </div>
             </div>
           </section>
@@ -115,6 +143,9 @@
         name: "HomeView",
         real_link: "",
         short:"",
+        update:false,
+        newRealLink:"",
+        currentHost: window.location.host,
       };
     },
     methods: {
@@ -149,17 +180,12 @@
             console.log(response);
             this.load()
         })
-        // await deleteDoc(doc(db, "shorten_test", todo.id));
+        // await deleteDoc(doc(db, "shorten_list", todo.id));
         // this.load();
-      },
-      
-  
-      selected(slot) {
-        this.categor = slot;
       },
   
       async updatedone(todo) {
-        await updateDoc(doc(db, "shorten_test", todo.id), {
+        await updateDoc(doc(db, "shorten_list", todo.id), {
           done: !todo.done,
         });
       },
@@ -175,35 +201,32 @@
         }
       },
     },
-     editLink() {
-      Swal.fire({
-        title: "Edit Link",
-        input: "text",
-        inputValue: "https://example.com",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        inputValidator: (value) => {
-          if (!value) {
-            return "You need to write something!";
-          }
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire(
-            "Changed Successfully",
-            "Your file has been changed.",
-            "success"
-          );
-        }
-      });
-    },
+    
+    async updateItem(id, real_link) {
+                console.log(real_link)
+                if (this.newRealLink == '') {
+                    this.newRealLink = real_link
+                }
+                const res = await axios.post("/api/update", {
+                    newRealLink: this.newRealLink,
+                    id: id
+                })
+                this.lists = [];
+                this.newRealLink = ''
+            },
     mounted() {
-        this.app.sessionCheck();
-        
-    //   this.load();
+        // this.app.sessionCheck();
+      this.load();
     },
   };
   </script>
   
-  
+  <style>
+    @media (min-width: 1024px) {
+    .about {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+  }
+  </style>
