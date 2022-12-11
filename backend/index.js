@@ -27,7 +27,7 @@ app.post('/post/login', (req, res) => {
 				const user = userCredential.user;
 				console.log('ini Login');
 				// localStorage.setItem('uid', user.uid)
-				res.send(user.uid);
+				res.send(user);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -72,15 +72,11 @@ app.get('/shorts', async (req, res) => {
 	try {
 		let shorts = [];
 		const querySnapshot = await getDocs(collection(db, 'shorten_list')).catch((err) => console.log(err));
-		//   short_collection
-		//   .get()
-		//   .then((querySnapshot) => {
+	
 		querySnapshot.forEach((doc) => {
-			// console.log(doc.data());
-			//   const data = doc.data();
+	
 			console.log(doc.id, ' => ', doc.data());
-			// const short = data.short
-			// const full = data.full
+		
 			let id = doc.id;
 			shorts.push({ id, ...doc.data() });
 		});
@@ -106,42 +102,6 @@ app.delete('/shorts/:short', (req, res) => {
 	}
 });
 
-//   app.post("/api/update", async (req, res) => {
-
-//     const newRealLink = req.body.newRealLink
-//     const id_params = req.params.short;
-//     const docRef = doc(db, "shorten_list", id_params)
-
-//     try {
-//         await updateDoc(docRef, {
-//             real_link: newRealLink
-//         })
-//         res.send({ message: "Succesfully edited" })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.send(err)
-//     }
-// });
-
-// app.patch("/shorts/:short", async(req,res) => {
-//     const real = req.body.real_link
-//     const random = req.body.random_link
-//     const id_params = req.params.short;
-//       console.log(id_params)
-//       try{
-//         const docRef = updateDoc(doc(db, "shorten_list" , id_params),{
-//             full: real,
-//             short: random,
-//         }).then(() => { res.send({
-//                   message: "Data telah di update."
-//               })} )
-//     }
-//     catch(error) {
-//         res.send(error.message)
-//     }
-// })
-
 app.patch('/shorts/:id', (req, res) => {
 	const real = req.body.real_link;
 	console.log(real);
@@ -160,7 +120,7 @@ app.patch('/shorts/:id', (req, res) => {
 		});
 	}
 });
-
+ 
 app.post('/shorts/', (req, res) => {
 	const real = req.body.real_link;
 	const random = req.body.random_link;
@@ -170,7 +130,8 @@ app.post('/shorts/', (req, res) => {
 			full: real,
 			short: random,
 			uid: req.body.uid,
-			editState: false
+			editState: false,
+			count: 0
 		});
 		res.send({
 			message: 'Data telah ditambahkan.'

@@ -31,9 +31,9 @@ export const useApp = defineStore({
             password: password,
         })
         .then((response) => {
-          console.log(response.data)
+          console.log(response)
           console.log("ini Login")
-          localStorage.setItem("userToken", response.data);
+          localStorage.setItem("userToken", response.data.uid);
           this.router.push("/home")
         })
       }

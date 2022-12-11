@@ -54,67 +54,38 @@
         </form>
         <br />
 
-        <section class="todo-list">
+        <section>
           <h1 class="text-3xl text-center font-bold">List of URLS:</h1>
           <div class="list" id="todo-list">
             <br />
-            <div v-for="todo in lists" :class="`todo-item ${todo.done && 'done'}`" :key="todo">
+            <div class="bg-gray-800 rounded-lg gap-y-5" v-for="todo in lists" :class="`todo-item ${todo.done && 'done'}`" :key="todo">
               <br />
-              <!-- <a class="underline" :href="`http://localhost:3000/shorts/` + todo.short">
-                  http://localhost:5731/{{ todo.short }}
-                </a> -->
+              <a @click="counterTodo(todo)" class="flex items-center flex justify-center" target="_blank"
+                v-bind:href="todo.short">{{ currentHost
+                }}/{{ todo.short }}</a>
 
-              <div class="flex items-center flex justify-center">
-                <router-link :to="'/' + todo.short" target="_blank">
-                  {{ currentHost }}/{{ todo.short }}</router-link>
+              <div class="rounded-lg bg-blue-500 w-20 itens-center m-auto relative flex justify-center lg:flex-col">
+                <button class="delete">
+                  {{ todo.count }}
+                </button>
               </div>
-
-              <!-- <a class="card-text" :href="`http://localhost:3000/shorts/${short}` + todo.short"> -->
-
-              <div class="flex justify-center bg-red-400 rounded-lg" type="delete" value="SUBMIT">
+              <br />
+              <h3 class="flex items-center flex justify-center">Delete</h3>
+              <div class="rounded-lg bg-red-500 w-20 itens-center m-auto relative flex justify-center lg:flex-col" type="delete" value="SUBMIT">
                 <button class="delete" @click="removeTodo(todo.id)">
-                  Delete
+                  <i class="fa fa-trash"></i>
                 </button>
               </div>
               <br>
-              <div class="flex justify-center bg-blue-400 rounded-lg">
-                <!-- <button class="update" @click="updateItem(id, customPath, real_link)"> -->
-                <!-- <router-link to="/edit" custom v-slot="{ navigate }">
-
-                  <button @click="navigate" role="link"> Edit </button> </router-link> -->
-                <button class="flex justify-center blue-400 rounded-lg"
-                  @click="(todo.editState = !todo.editState)">Edit</button>
+              <h3 class="flex items-center flex justify-center">Edit</h3>
+              <div >
+                <button  class="rounded-lgitens-center m-auto relative flex justify-center lg:flex-col"
+                  @click="(todo.editState = !todo.editState)"><i class="fa fa-edit rounded-lg bg-green-300 w-20 h-9 itens-center m-auto relative flex justify-center lg:flex-col"></i></button>
                 <div v-if="todo.editState">
                   <br>
-                  <h3>Edit Link</h3>
                   <form>
                     <input v-model="edit_link"
-                      class="w-full focus:border-blue-600 focus:ring-1 focus:ring-blue-500 focus:outline-none  text- text-black placeholder-gray-500 border border-gray-200 rounded-lg pl-4 py-2 mb-4"
-                      type="url" pattern="https://.*" aria-label="URL" placeholder="blabla.com" required />
-                    <br>
-
-                    <button
-                      class="w-20 bg-gradient-to-r from-blue-600 to-blue-400 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded"
-                      @click="(todo.editState = !todo.editState); editLink(todo)">Edit</button>
-                    <button
-                      class="w-20 bg-gradient-to-r from-blue-600 to-blue-400 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded"
-                      @click="todo.editState = !todo.editState">Cancel</button>
-                  </form>
-                </div>
-              </div>
-              <br>
-              <!-- <div class="edit" v-show="editbar">
-                <input type="text" placeholder="new slink" v-model="todo.newslink" />
-                <input type="text" placeholder="new url" v-model="todo.newflink"/>
-                <button type="submit" @click="editHandler(todo.id)">Submit Edit</button>
-                </div> -->
-              <!-- <form v-if="todo.update" id="update-form" @submit.prevent="editHandler()">
-                  <input type="text" placeholder="new url" v-model="real_link.newflink"/>
-               -->
-
-              <!-- <input type="text" placeholder="new slink" v-model="newLink.newslink" /> -->
-
-              <!-- <input class="
+                      class="
                   w-full
                   focus:border-green-800 focus:ring-1 focus:ring-green-800 focus
                   outline-none
@@ -124,11 +95,21 @@
                   pl-4
                   py-2
                   mb-4
-                " type="text" required name="content" id="content" placeholder="https/" v-model="edit_link" />
-              -->
-              <!-- <button class="w-full bg-yellow-700 rounded-lg" type="submit" value="SUBMIT">
-              Submit!</button> 
-          </form> -->
+                " 
+                      type="url" pattern="https://.*" aria-label="URL" placeholder="https//" required />
+                    <br>
+
+                    <button
+                      class="w-20 bg-green-700 text-white text-sm font-bold py-2 px-4 rounded"
+                      @click="(todo.editState = !todo.editState); editLink(todo)">Save</button>
+                  
+                    <button
+                      class="w-20 bg-red-700 text-white text-sm font-bold py-2 px-4 rounded"
+                      @click="todo.editState = !todo.editState">Cancel</button>
+                  </form>
+                </div>
+              </div>
+              <br>
             </div>
           </div>
         </section>
@@ -151,6 +132,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  increment,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -176,8 +158,6 @@ export default {
       edit_link: "",
       short: "",
       update: false,
-      newflink: "",
-      newslink: "",
       currentHost: window.location.host,
     };
   },
@@ -190,7 +170,8 @@ export default {
           random_link: r,
           real_link: this.real_link,
           uid: localStorage.getItem('userToken'),
-          editState: false
+          editState: false,
+          count: 0
         })
         this.load();
       } catch (e) {
@@ -214,8 +195,6 @@ export default {
           console.log(response);
           this.load()
         })
-      // await deleteDoc(doc(db, "shorten_list", todo.id));
-      // this.load();
     },
 
     async updatedone(todo) {
@@ -247,45 +226,17 @@ export default {
         }).catch((error) => {
           console.log(error);
         });
-
     },
+
+    async counterTodo(todo) {
+      const counter = doc(db, "shorten_list", todo.id);
+      await updateDoc(counter, {
+        "count": increment(1)
+      })
+      this.load();
+    }
+
   },
-
-
-  // async updateItem(id, real_link) {
-  //             console.log(real_link)
-  //             if (this.newRealLink == '') {
-  //                 this.newRealLink = real_link
-  //             }
-  //             const res = await axios.post("/api/update", {
-  //                 newRealLink: this.newRealLink,
-  //                 id: id
-  //             })
-  //             this.lists = [];
-  //             this.newRealLink = ''
-  //         },
-
-  // async editHandler(short) {
-  //   const res = await axios.patch(`http://localhost:3000/shorts/${short}`, {
-  //     newflink: this.newLink.newflink,
-  //     newslink: this.newLink.newslink,
-  //   })
-  //   .then((response) => {
-  //     location.reload()
-  //     console.log(response)
-  //   })
-  // },
-  // editLink(todo.id){
-  //   this.lists.forEach((short) => {
-  //     if(short.id == id){
-  //       this.newLink.id = todo.id
-  //       this.newLink.newflink = link.flink
-  //       this.newLink.newslink = link.slink
-  //     }
-  //   })
-  //   this.editbar = true;
-  // })},
-
 
   mounted() {
     // this.app.sessionCheck();
