@@ -67,7 +67,6 @@ app.post('/signup', (req, res) => {
 
 //SHORTEN LINK!!!
 
-//Redirect
 app.get("/shorts", async (req, res) => {
     
     try {
@@ -92,37 +91,7 @@ app.get("/shorts", async (req, res) => {
       res.sendStatus(500)
     }
   });
-  
-  //Nampilin ShortLink
-//   app.get("/shorts/:short", (req, res) => {
-//     const short_params = req.params.short;
-//   //   const {short} = req.params;
-//     let shorts = [];
-//     try {
-//       short_collection
-//         .get()
-//         .then((querySnapshot) => {
-//           querySnapshot.forEach((doc) => {
-//             const data = doc.data();
-//             const id = doc.id;
-//             console.log(data);
-//             console.log(id);
-//             shorts.push({
-//               id: this.id,
-//               short: data.short,
-//               full: data.full,
-//             });
-//           });
-  
-//           res.send(shorts);
-//           // res.send("halo")
-//         });
-//     } catch (error) {
-//       console.log(error);
-//       res.sendStatus(500);
-//     }
-//   });
-  
+   
   app.delete("/shorts/:short", (req, res) => {
       const id_params = req.params.short;
       console.log(id_params)
@@ -137,30 +106,6 @@ app.get("/shorts", async (req, res) => {
           console.log(error)
       }
   });
-
-//   // Function to redirect links
-// app.get("/shorts/:short", (req, res) => {
-//     const id_params = req.params.short;
-//     console.log(id_params)
-//     try {
-//     //   const shortRef = doc(collection(db, "shorten_list", id_params));
-//     //   const doc = shortRef.get();
-//       if (doc(collection(db, "shorten_list", id_params)).get.exists) {
-//         const short = doc.data();
-//         doc(collection).update({
-//           viewCount: full.viewCount + 1,
-//         });
-//         res.redirect(short.full);
-//       } else {
-//         res.send({
-//           message: "Short url does not exist",
-//           status: false,
-//         });
-//       } 
-//     } catch (err) {
-//       console.log(err);
-//     }
-//     });
 
   app.post("/api/update", async (req, res) => {
 
